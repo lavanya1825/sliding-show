@@ -1,0 +1,20 @@
+Create the HTML structure with a main container for the slider.
+
+Add three hidden radio buttons that keep track of which slide is active.
+
+Create a slides container that holds three slides side-by-side.
+
+Use CSS flexbox to arrange slides horizontally.
+
+Move the slides container left or right using CSS transform based on which radio button is checked.
+
+Add labels as buttons for previous and next controls, linked to the radio buttons to change slides when clicked.
+
+Add navigation dots as labels linked to each radio button for direct slide selection.
+
+Style each slide with different background colors and text.
+
+Make the layout responsive to fit mobile screens nicely.
+
+Add accessibility attributes so keyboard and screen readers can navigate the slider.
+to create this we need to follow the above steps based on my knowledge i have created this slide show we can make changes to this code
