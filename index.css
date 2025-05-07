@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Sliding Information Page with Prev/Next</title>
+<style>
+  /* Reset & base */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: black;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  #slider {
+    position: relative;
+    width: 100vw;
+    max-width: 350px;
+    height: 100vh;
+    max-height: 600px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+    background: red;
+    font-weight: 400;
+  }
+
+  /* Radio buttons hidden */
+  input[type="radio"] {
+    display: none;
+  }
+
+  .slides-wrapper {
+    display: flex;
+    width: 300%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  /* When radio 1 checked */
+  #slide1:checked ~ .slides-wrapper {
+    transform: translateX(0%);
+  }
+  /* When radio 2 checked */
+  #slide2:checked ~ .slides-wrapper {
+    transform: translateX(-33.3333%);
+  }
+  /* When radio 3 checked */
+  #slide3:checked ~ .slides-wrapper {
+    transform: translateX(-66.6667%);
+  }
+
+  .slide {
+    width: 100vw;
+    max-width: 350px;
+    height: 100vh;
+    max-height: 600px;
+    flex-shrink: 0;
+    padding: 30px 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 20px;
+    box-sizing: border-box;
+  }
+
+  /* Slide backgrounds */
+  .slide:nth-child(1) {
+    background: red;
+  }
+  .slide:nth-child(2) {
+    background: blue;
+  }
+  .slide:nth-child(3) {
+    background: green;
+  }
+
+  h2 {
+    margin: 0 0 15px;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+
+  /* Navigation dots container */
+  .nav-dots {
+    position: absolute;
+    bottom: 15px;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* The dots labels as navigation */
+  .nav-dots label {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 8px;
+    background-color: rgba(255,255,255,0.6);
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Highlight the active dot */
+  #slide1:checked ~ .nav-dots label[for="slide1"],
+  #slide2:checked ~ .nav-dots label[for="slide2"],
+  #slide3:checked ~ .nav-dots label[for="slide3"] {
+    background-color: #ffffff;
+  }
+
+  /* Prev & Next Buttons Style */
+  .nav-prev, .nav-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.3);
+    color: white;
+    font-size: 2.5rem;
+    line-height: 1;
+    padding: 10px 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s;
+  }
+  .nav-prev:hover, .nav-next:hover {
+    background: rgba(0,0,0,0.6);
+  }
+  .nav-prev {
+    left: 10px;
+  }
+  .nav-next {
+    right: 10px;
+  }
+
+  /* Show/hide nav buttons depending on which slide is checked */
+  /* For slide1: prev goes to slide3, next to slide2 */
+  #slide1:checked ~ .nav-prev[for="slide3"],
+  #slide1:checked ~ .nav-next[for="slide2"] {
+    display: inline-block;
+  }
+  /* Hide others for slide1 */
+  #slide1:checked ~ .nav-prev:not([for="slide3"]),
+  #slide1:checked ~ .nav-next:not([for="slide2"]) {
+    display: none;
+  }
+
+  /* For slide2: prev goes to slide1, next to slide3 */
+  #slide2:checked ~ .nav-prev[for="slide1"],
+  #slide2:checked ~ .nav-next[for="slide3"] {
+    display: inline-block;
+  }
+  /* Hide others for slide2 */
+  #slide2:checked ~ .nav-prev:not([for="slide1"]),
+  #slide2:checked ~ .nav-next:not([for="slide3"]) {
+    display: none;
+  }
+
+  /* For slide3: prev goes to slide2, next to slide1 */
+  #slide3:checked ~ .nav-prev[for="slide2"],
+  #slide3:checked ~ .nav-next[for="slide1"] {
+    display: inline-block;
+  }
+  /* Hide others for slide3 */
+  #slide3:checked ~ .nav-prev:not([for="slide2"]),
+  #slide3:checked ~ .nav-next:not([for="slide1"]) {
+    display: none;
+  }
+
+  /* Responsive text scaling */
+  @media (max-width: 400px) {
+    h2 {
+      font-size: 1.6rem;
+    }
+    p {
+      font-size: 1rem;
+    }
+    .nav-prev, .nav-next {
+      font-size: 2rem;
+      padding: 8px 12px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div id="slider" role="region" aria-label="Sliding information content">
+
+    <!-- Radio buttons for slides -->
+    <input type="radio" id="slide1" name="slider" checked />
+    <input type="radio" id="slide2" name="slider" />
+    <input type="radio" id="slide3" name="slider" />
+
+    <div class="slides-wrapper" aria-live="polite">
+      <section class="slide" tabindex="0" aria-label="Slide 1">
+        <h2>Welcome to the sliding pages</h2>
+        <p>
+          I am Lavanya, a basic programmer.
+        </p>
+      </section>
+      <section class="slide" tabindex="0" aria-label="Slide 2">
+        <p>
+          This is a small sliding show, it is created based on HTML and CSS only.
+        </p>
+      </section>
+      <section class="slide" tabindex="0" aria-label="Slide 3">
+        <p>
+          "THANKS for watching"!!!!!
+        </p>
+      </section>
+    </div>
+
+    <!-- Prev/Next navigation buttons -->
+    <!-- For slide 1 -->
+    <label for="slide3" class="nav-prev" aria-label="Previous Slide" title="Previous Slide">&lt;</label>
+    <label for="slide2" class="nav-next" aria-label="Next Slide" title="Next Slide">&gt;</label>
+    <!-- For slide 2 -->
+    <label for="slide1" class="nav-prev" aria-label="Previous Slide" title="Previous Slide">&lt;</label>
+    <label for="slide3" class="nav-next" aria-label="Next Slide" title="Next Slide">&gt;</label>
+    <!-- For slide 3 -->
+    <label for="slide2" class="nav-prev" aria-label="Previous Slide" title="Previous Slide">&lt;</label>
+    <label for="slide1" class="nav-next" aria-label="Next Slide" title="Next Slide">&gt;</label>
+
+    <!-- Navigation dots -->
+    <div class="nav-dots" role="tablist" aria-label="Slide navigation">
+      <label for="slide1" role="tab" tabindex="0" aria-selected="true" aria-controls="slidesWrapper" title="Slide 1"></label>
+      <label for="slide2" role="tab" tabindex="0" aria-selected="false" aria-controls="slidesWrapper" title="Slide 2"></label>
+      <label for="slide3" role="tab" tabindex="0" aria-selected="false" aria-controls="slidesWrapper" title="Slide 3"></label>
+    </div>
+
+  </div>
+</body>
+</html>
+</content>
+</create_file>
